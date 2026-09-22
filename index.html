@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sportlingo — спортивный профиль</title>
+<style>
+:root{
+ --green:#58cc02;--green-dark:#46a900;--green-pale:#effbdc;--ink:#24352f;
+ --muted:#77847d;--line:#e3e8e0;--bg:#f7f8f2;--white:#fff;
+ --blue:#28a9f5;--orange:#ff9600;--red:#ff5a5f;--purple:#8d67d8;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{position:fixed;z-index:20;left:0;top:0;bottom:0;width:250px;background:#fff;border-right:2px solid var(--line);padding:22px 14px}
+.brand{font-size:27px;font-weight:950;color:var(--green);padding:3px 12px 25px;letter-spacing:-1.4px}.brand b{color:var(--orange)}
+.nav{display:flex;flex-direction:column;gap:6px}.nav button{border:0;background:none;color:#68766f;text-align:left;padding:13px 14px;border-radius:14px;font-weight:850;display:flex;gap:12px;align-items:center}.nav button:hover,.nav button.active{background:var(--green-pale);color:#429900}.nav i{font-style:normal;font-size:22px;width:25px;text-align:center}
+.main{margin-left:250px;width:calc(100% - 250px);padding:28px 34px 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.hello h1{font-size:29px;margin:0;letter-spacing:-.6px}.hello p{margin:5px 0 0;color:var(--muted);font-weight:700}
+.streak{background:#fff;border:2px solid var(--line);padding:10px 15px;border-radius:15px;font-weight:900}
+.screen{display:none}.screen.active{display:block}
+
+/* HOME */
+.hero{background:linear-gradient(135deg,#eaffd8,#fbfff8 55%,#e8f7ff);border:2px solid #dce9d5;border-radius:30px;min-height:385px;display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;padding:30px;position:relative;overflow:hidden;box-shadow:0 7px 0 rgba(88,204,2,.08)}
+.hero:before,.hero:after{content:"";position:absolute;background:#fff;border-radius:50%;opacity:.7}.hero:before{width:180px;height:45px;right:8%;top:48px}.hero:after{width:120px;height:35px;left:7%;bottom:45px}
+.panel{background:#fff;border:2px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 4px 0 rgba(36,53,47,.06);position:relative;z-index:2}
+.avatar-area{text-align:center;position:relative;z-index:3}.avatar-stage{height:270px;display:flex;justify-content:center;align-items:end;position:relative}
+.avatar-svg{width:190px;height:255px;overflow:visible;filter:drop-shadow(0 8px 4px rgba(0,0,0,.12))}
+.avatar-name{font-size:19px;font-weight:950;margin-top:8px}.avatar-age{color:var(--muted);font-size:13px;font-weight:800}
+.level .row{display:flex;justify-content:space-between;font-weight:950;margin-bottom:10px}.bar{height:17px;border-radius:99px;background:#e9eee7;overflow:hidden}.bar>span{display:block;height:100%;background:var(--green);border-radius:99px;transition:.35s}.micro{font-size:12px;color:var(--muted);font-weight:750;margin-top:8px}
+.quick{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}.pill{border-radius:11px;padding:8px 10px;font-weight:900;font-size:12px;background:#f0fae9}.pill.blue{background:#eaf7ff}.pill.orange{background:#fff3df}
+.cta h3{margin:0 0 6px}.cta p{color:var(--muted);font-weight:700;line-height:1.4;font-size:14px}.btn{border:0;border-bottom:4px solid var(--green-dark);background:var(--green);color:#fff;font-weight:950;border-radius:13px;padding:12px 16px}.btn:active{border-bottom-width:1px;transform:translateY(3px)}.btn.secondary{background:#fff;color:var(--green-dark);border:2px solid #bce5a2;border-bottom-width:4px}.btn.blue{background:var(--blue);border-bottom-color:#1787c8}
+.section-head{display:flex;align-items:end;justify-content:space-between;margin:27px 2px 13px}.section-head h2{margin:0;font-size:21px}.section-head span{font-size:12px;color:var(--muted);font-weight:800}
+.attendance{background:#fff;border:2px solid var(--line);border-radius:23px;padding:21px;box-shadow:0 4px 0 rgba(36,53,47,.05)}
+.att-head{display:flex;justify-content:space-between;align-items:center}.att-head h3{margin:0}.counter{background:var(--green-pale);color:#4e9419;padding:8px 11px;border-radius:11px;font-weight:950}
+.lesson-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:17px}.lesson{height:65px;border:2px solid #e7ebe5;background:#fbfcfa;border-radius:14px;position:relative;display:grid;place-items:center;color:#b1b9b3;font-size:20px;font-weight:950}.lesson small{position:absolute;left:7px;top:5px;font-size:9px}.lesson.done{background:#effbdc;border-color:#bfe59d;color:#56a61d}.lesson.done:after{content:"✓";font-size:27px}.lesson.today{border-color:var(--orange);box-shadow:0 0 0 3px #fff0d7}
+.att-note{margin-top:15px;padding:13px 14px;border-radius:14px;background:#fff8df;font-weight:800;color:#80631c;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.stat{background:#fff;border:2px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 0 rgba(36,53,47,.05)}.stat .icon{font-size:31px}.stat h3{margin:7px 0 4px}.stat p{margin:0;color:var(--muted);font-weight:700;font-size:13px}
+
+/* skills */
+.page-title h2{margin:0;font-size:28px}.page-title p{color:var(--muted);font-weight:700}.skill-filter{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.filter{border:2px solid var(--line);background:#fff;padding:9px 13px;border-radius:12px;font-weight:900}.filter.active{background:var(--green-pale);border-color:#bde89f;color:#4c9418}.skill-list{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.skill-card{background:#fff;border:2px solid var(--line);border-radius:21px;padding:18px;position:relative}.skill-card.locked{opacity:.62}.skill-icon{font-size:38px}.skill-card h3{margin:8px 0 4px}.skill-card p{margin:0 0 14px;color:var(--muted);font-weight:700;font-size:13px;line-height:1.35}.tag{display:inline-block;background:#eef8e8;color:#4d911d;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:950;margin-bottom:11px}
+.path{margin-top:18px;background:#fff;border:2px solid var(--line);border-radius:24px;padding:22px;overflow:auto}.path-row{display:flex;align-items:center;min-width:720px;justify-content:space-around;position:relative}.path-row:before{content:"";position:absolute;left:7%;right:7%;height:8px;background:#dfe9d9;border-radius:99px}.node{position:relative;z-index:1;text-align:center;width:120px}.node-circle{width:75px;height:75px;margin:auto;border-radius:50%;border:6px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.12);display:grid;place-items:center;font-size:30px}.node.done .node-circle{background:var(--green)}.node.open .node-circle{background:var(--blue)}.node.lock .node-circle{background:#d8ddd8;filter:grayscale(1)}.node b{display:block;font-size:12px;margin-top:8px}
+
+/* attendance page */
+.calendar{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.month-card{background:#fff;border:2px solid var(--line);border-radius:21px;padding:19px}.month-card h3{margin:0 0 12px}.month-card .big{font-size:30px;font-weight:950}.complete{color:#4f9819;font-weight:900}.incomplete{color:#b36c00;font-weight:900}
+
+/* profile */
+.profile-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:16px}.form-card{background:#fff;border:2px solid var(--line);border-radius:23px;padding:22px}.field{margin-bottom:15px}.field label{display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:12px 13px;border:2px solid var(--line);border-radius:12px;outline:none;background:#fff}.field input:focus,.field select:focus{border-color:#9bd978}.profile-preview{text-align:center;background:linear-gradient(145deg,#f0ffdf,#fff);border:2px solid #dcebd4;border-radius:23px;padding:25px}
+
+/* modal/video */
+.modal{position:fixed;inset:0;background:rgba(18,33,27,.58);z-index:50;display:none;place-items:center;padding:18px}.modal.open{display:grid}.modal-box{width:min(620px,100%);background:#fff;border-radius:25px;padding:23px;box-shadow:0 20px 70px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eef1ec;border-radius:50%;width:38px;height:38px;font-size:20px}.upload{border:2px dashed #b9dca3;background:#f5fbea;border-radius:18px;padding:25px;text-align:center;margin:16px 0}.upload input{display:none}.upload label{display:inline-block;background:var(--green);color:white;padding:11px 15px;border-radius:12px;font-weight:900}.video-preview{width:100%;max-height:260px;border-radius:15px;background:#101513;display:none}.verify{margin-top:15px;display:none}.verify.show{display:block}.verifybar{height:13px;background:#e8ede6;border-radius:99px;overflow:hidden}.verifybar span{display:block;width:0;height:100%;background:var(--green);transition:width 1.7s}.result{display:none;margin-top:14px;padding:14px;background:var(--green-pale);border-radius:14px;font-weight:900}.result.show{display:block}
+.toast{position:fixed;right:22px;bottom:22px;background:#24352f;color:#fff;padding:14px 17px;border-radius:14px;font-weight:900;z-index:100;opacity:0;transform:translateY(12px);transition:.25s;max-width:360px}.toast.show{opacity:1;transform:none}
+
+/* mobile */
+.mobile-nav{display:none}
+@media(max-width:1000px){.hero{grid-template-columns:1fr 1fr}.avatar-area{grid-column:1/3}.cta{grid-column:1/3}.skill-list{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr}}
+@media(max-width:700px){
+ .sidebar{width:74px;padding:13px 7px}.brand{font-size:0;text-align:center;padding:5px 0 20px}.brand:after{content:"🏅";font-size:29px}.nav button{justify-content:center;padding:12px 8px}.nav span:last-child{display:none}.nav i{width:auto}
+ .main{margin-left:74px;width:calc(100% - 74px);padding:18px 14px 40px}.hello h1{font-size:22px}.streak{font-size:12px}
+ .hero{grid-template-columns:1fr;padding:18px;min-height:auto}.avatar-area,.cta{grid-column:auto}.avatar-stage{height:240px}.stats{grid-template-columns:1fr}.lesson-grid{grid-template-columns:repeat(4,1fr)}.skill-list{grid-template-columns:1fr}.calendar{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+ .sidebar{display:none}.main{margin:0;width:100%;padding-bottom:82px}.mobile-nav{display:flex;position:fixed;z-index:30;bottom:0;left:0;right:0;height:66px;background:#fff;border-top:2px solid var(--line);justify-content:space-around;align-items:center}.mobile-nav button{border:0;background:none;font-size:10px;font-weight:900;color:#708078}.mobile-nav button.active{color:#4a9417}.mobile-nav b{display:block;font-size:21px}
+ .topbar{align-items:flex-start}.streak{padding:8px}.lesson-grid{gap:6px}.lesson{height:59px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">Sport<b>lingo</b> 🏅</div>
+  <nav class="nav">
+    <button class="active" data-page="home"><i>🏠</i><span>Главная</span></button>
+    <button data-page="attendance"><i>📅</i><span>Занятия</span></button>
+    <button data-page="skills"><i>🗺️</i><span>Навыки</span></button>
+    <button data-page="profile"><i>🧑</i><span>Мой спортсмен</span></button>
+    <button data-page="achievements"><i>🏆</i><span>Достижения</span></button>
+    <button data-page="stats"><i>📊</i><span>Статистика</span></button>
+  </nav>
+</aside>
+<nav class="mobile-nav">
+ <button data-page="home" class="active"><b>🏠</b>Главная</button>
+ <button data-page="attendance"><b>📅</b>Занятия</button>
+ <button data-page="skills"><b>🗺️</b>Навыки</button>
+ <button data-page="profile"><b>🧑</b>Профиль</button>
+</nav>
+
+<main class="main">
+<header class="topbar">
+ <div class="hello"><h1 id="hello">Привет! 👋</h1><p>Твой спортивный путь продолжается</p></div>
+ <div class="streak">🔥 <span id="streak">6</span> дней</div>
+</header>
+
+<section id="home" class="screen active">
+ <div class="hero">
+  <div class="avatar-area">
+   <div class="avatar-stage"><div id="avatar"></div></div>
+   <div class="avatar-name" id="avatarName">Алекс</div>
+   <div class="avatar-age" id="avatarAge">9 лет · акробатика</div>
+  </div>
+  <div class="panel level">
+   <div class="row"><span>УРОВЕНЬ <span id="level">1</span></span><span>⭐ <span id="xp">0</span> XP</span></div>
+   <div class="bar"><span id="xpbar" style="width:0%"></span></div>
+   <div class="micro" id="xpcaption">0 / 500 XP до следующего уровня</div>
+   <div class="quick"><span class="pill">🤸 <span id="skillCount">0</span> навыков</span><span class="pill blue">🎯 3 цели</span><span class="pill orange">🏆 <span id="badgeCount">0</span> наград</span></div>
+  </div>
+  <div class="panel cta">
+   <h3 id="nextTitle">🎯 Следующая цель</h3>
+   <p id="nextText">Выбери навык и запиши видео. После проверки он появится у твоего аватара.</p>
+   <button class="btn" id="nextBtn">ОТКРЫТЬ НАВЫКИ</button>
+  </div>
+ </div>
+
+ <div class="section-head"><h2>📅 Посещения</h2><span>Занятие = XP + прогресс месяца</span></div>
+ <div class="attendance">
+  <div class="att-head"><h3>Сентябрь 2026</h3><div class="counter"><span id="attended">0</span> / <span id="target">8</span> занятий</div></div>
+  <div class="lesson-grid" id="lessonGrid"></div>
+  <div class="att-note" id="attNote">Каждое посещённое занятие даёт <b>+50 XP</b>. Выполни месячную норму — получишь новый уровень.</div>
+  <button class="btn secondary" style="margin-top:14px" id="addLesson">✓ Отметить сегодняшнее занятие</button>
+ </div>
+
+ <div class="section-head"><h2>⚡ Твой прогресс</h2><span>Обновляется сразу</span></div>
+ <div class="stats">
+  <div class="stat"><div class="icon">⭐</div><h3 id="statXp">0 XP</h3><p>За посещения и спортивные достижения</p></div>
+  <div class="stat"><div class="icon">🤸</div><h3 id="statSkills">0 навыков</h3><p>Подтверждено в твоём спортивном пути</p></div>
+  <div class="stat"><div class="icon">🏆</div><h3 id="statBadges">0 наград</h3><p>За регулярность и новые достижения</p></div>
+ </div>
+
+ <div class="section-head"><h2>🗺️ Путь навыков</h2><span>Ближайшие элементы</span></div>
+ <div class="path"><div class="path-row" id="pathRow"></div></div>
+</section>
+
+<section id="attendance" class="screen">
+ <div class="page-title"><h2>📅 Занятия</h2><p>Посещения дают XP. Полный месяц по расписанию открывает новый уровень.</p></div>
+ <div class="calendar">
+  <div class="month-card"><h3>Сентябрь</h3><div class="big"><span id="a1">0</span> / 8</div><div class="complete" id="m1">В процессе</div></div>
+  <div class="month-card"><h3>Август</h3><div class="big">8 / 8</div><div class="complete">✓ Месяц закрыт · +1 уровень</div></div>
+  <div class="month-card"><h3>Июль</h3><div class="big">6 / 6</div><div class="complete">✓ Месяц закрыт · +1 уровень</div></div>
+  <div class="month-card"><h3>Июнь</h3><div class="big">5 / 7</div><div class="incomplete">Норма не набрана</div></div>
+ </div>
+ <div class="section-head"><h2>Как работает уровень</h2></div>
+ <div class="panel"><p style="font-weight:750;line-height:1.6;margin:0">У каждого ребёнка есть количество занятий по расписанию. Если в месяце запланировано 6 занятий и посещены все 6 — месяц закрывается. Если запланировано 8 и посещено 6 — остаётся 2. Мы не штрафуем за сам факт пропуска: важен итоговый набор занятий по расписанию.</p></div>
+</section>
+
+<section id="skills" class="screen">
+ <div class="page-title"><h2>🗺️ Путь навыков</h2><p>Настоящие спортивные умения превращаются в способности цифрового спортсмена.</p></div>
+ <div class="skill-filter">
+  <button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="acro">Акробатика</button><button class="filter" data-filter="strength">Сила</button><button class="filter" data-filter="flex">Гибкость</button>
+ </div>
+ <div class="skill-list" id="skillList"></div>
+</section>
+
+<section id="profile" class="screen">
+ <div class="page-title"><h2>🧑 Мой спортсмен</h2><p>Аватар меняется вместе с возрастом ребёнка.</p></div>
+ <div class="profile-grid">
+  <div class="form-card">
+   <div class="field"><label>ИМЯ</label><input id="nameInput" value="Алекс"></div>
+   <div class="field"><label>ВОЗРАСТ</label><input id="ageInput" type="number" min="3" max="25" value="9"></div>
+   <div class="field"><label>ПОЛ АВАТАРА</label><select id="genderInput"><option value="boy">Мальчик</option><option value="girl">Девочка</option></select></div>
+   <div class="field"><label>НАПРАВЛЕНИЕ</label><select><option>Акробатика</option><option>Хореография</option><option>Гимнастика</option><option>Танцы</option><option>Фитнес</option></select></div>
+   <button class="btn" id="saveProfile">СОХРАНИТЬ</button>
+  </div>
+  <div class="profile-preview"><div id="profileAvatar"></div><h3 id="profileAgeText">9 лет</h3><p style="color:var(--muted);font-weight:750">Размер головы, пропорции тела и общий силуэт подстраиваются под возраст.</p></div>
+ </div>
+</section>
+
+<section id="achievements" class="screen">
+ <div class="page-title"><h2>🏆 Достижения</h2><p>Здесь собираются спортивные и регулярные достижения.</p></div>
+ <div class="stats"><div class="stat"><div class="icon">🔥</div><h3>Серия 6 дней</h3><p>Регулярно посещай занятия</p></div><div class="stat"><div class="icon">📅</div><h3>Первый месяц</h3><p>Месячная норма выполнена</p></div><div class="stat"><div class="icon">🤸</div><h3>Первый навык</h3><p>Подтверждён первый элемент</p></div></div>
+</section>
+
+<section id="stats" class="screen">
+ <div class="page-title"><h2>📊 Статистика</h2><p>Прогресс ребёнка за всё время.</p></div>
+ <div class="stats"><div class="stat"><div class="icon">⭐</div><h3 id="sXp">0 XP</h3><p>Общий опыт</p></div><div class="stat"><div class="icon">📅</div><h3 id="sLessons">0</h3><p>Посещённых занятий</p></div><div class="stat"><div class="icon">🏅</div><h3 id="sMonths">2</h3><p>Закрытых месяцев</p></div></div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="videoModal">
+ <div class="modal-box">
+  <div class="modal-head"><div><h2 style="margin:0" id="modalTitle">🎥 Сдать навык</h2><p style="margin:5px 0;color:var(--muted);font-weight:700">Запиши реальное выполнение элемента.</p></div><button class="close" id="closeModal">×</button></div>
+  <div class="upload">
+   <div style="font-size:40px">🎬</div><p style="font-weight:850">Выбери видео с телефона или компьютера</p>
+   <label for="videoFile">ВЫБРАТЬ ВИДЕО</label><input id="videoFile" type="file" accept="video/*">
+  </div>
+  <video class="video-preview" id="videoPreview" controls playsinline></video>
+  <button class="btn blue" id="verifyBtn" style="display:none">ПРОВЕРИТЬ ВИДЕО</button>
+  <div class="verify" id="verify"><b>Проверяем выполнение…</b><div class="verifybar" style="margin-top:9px"><span id="verifyBar"></span></div></div>
+  <div class="result" id="result">✓ Навык подтверждён в демо-режиме! +100 XP. Аватар получил новое движение.</div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='sportlingo_demo_v2';
+const skills=[
+ {id:'roll',name:'Кувырок вперёд',icon:'🤸',cat:'acro',xp:100,desc:'Базовый элемент акробатики.',done:true},
+ {id:'wheel',name:'Колесо',icon:'🔄',cat:'acro',xp:100,desc:'Контроль тела в боковом вращении.',done:true},
+ {id:'handstand',name:'Стойка на руках',icon:'🙃',cat:'acro',xp:150,desc:'Баланс и контроль корпуса.',done:false},
+ {id:'somersault',name:'Сальто вперёд',icon:'🤸‍♂️',cat:'acro',xp:200,desc:'Сложный акробатический элемент.',done:false},
+ {id:'push20',name:'20 отжиманий',icon:'💪',cat:'strength',xp:120,desc:'Силовая выносливость.',done:false},
+ {id:'split',name:'Шпагат',icon:'🧘',cat:'flex',xp:150,desc:'Контролируемая гибкость.',done:false}
+];
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+ name:'Алекс',age:9,gender:'boy',level:1,xp:0,lessons:0,target:8,days:[],earned:[],verified:[],
+ streak:6,closedMonths:2
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function ageGroup(a){if(a<=6)return'kid';if(a<=9)return'child';if(a<=12)return'preteen';if(a<=15)return'teen';return'adult'}
+function avatarSVG(age,gender,compact=false){
+ const g=gender==='girl';
+ const group=ageGroup(age);
+ const props={
+  kid:{head:43,bodyW:70,bodyH:78,headY:45,bodyY:88,leg:65},
+  child:{head:39,bodyW:76,bodyH:90,headY:43,bodyY:84,leg:78},
+  preteen:{head:36,bodyW:82,bodyH:102,headY:40,bodyY:78,leg:91},
+  teen:{head:33,bodyW:88,bodyH:112,headY:38,bodyY:73,leg:103},
+  adult:{head:31,bodyW:92,bodyH:119,headY:36,bodyY:70,leg:111}
+ }[group];
+ const skin=g?'#f2c8a5':'#e7b78f', hair=g?'#3b281d':'#2d241e', shirt=g?'#8d67d8':'#58cc02', shorts=g?'#6846b8':'#247b13';
+ const cx=100, hy=props.headY, by=props.bodyY;
+ return `<svg class="avatar-svg" viewBox="0 0 200 270" aria-label="Человеческий аватар ${age} лет">
+  <ellipse cx="100" cy="258" rx="53" ry="7" fill="#b9c9b2" opacity=".45"/>
+  <circle cx="${cx}" cy="${hy}" r="${props.head/2}" fill="${skin}"/>
+  <path d="M${cx-props.head/2} ${hy-4} Q100 ${hy-props.head*0.9} ${cx+props.head/2} ${hy-4} L${cx+props.head/2-3} ${hy-18} Q100 ${hy-42} ${cx-props.head/2+3} ${hy-18}Z" fill="${hair}"/>
+  <circle cx="91" cy="${hy+2}" r="2.5" fill="#24352f"/><circle cx="109" cy="${hy+2}" r="2.5" fill="#24352f"/>
+  <path d="M94 ${hy+15} Q100 ${hy+20} 106 ${hy+15}" fill="none" stroke="#9c554e" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="${cx-props.bodyW/2}" y="${by}" width="${props.bodyW}" height="${props.bodyH}" rx="${Math.min(30,props.bodyW/3)}" fill="${shirt}"/>
+  <path d="M${cx-props.bodyW/2+10} ${by+props.bodyH-5} L${cx-23} ${by+props.bodyH+23} L${cx+23} ${by+props.bodyH+23} L${cx+props.bodyW/2-10} ${by+props.bodyH-5}Z" fill="${shorts}"/>
+  <rect x="${cx-props.bodyW/2-10}" y="${by+15}" width="13" height="${Math.max(55,props.bodyH*.62)}" rx="7" fill="${skin}" transform="rotate(12 ${cx-props.bodyW/2} ${by+15})"/>
+  <rect x="${cx+props.bodyW/2-3}" y="${by+15}" width="13" height="${Math.max(55,props.bodyH*.62)}" rx="7" fill="${skin}" transform="rotate(-12 ${cx+props.bodyW/2} ${by+15})"/>
+  <rect x="${cx-24}" y="${by+props.bodyH+13}" width="16" height="${props.leg}" rx="8" fill="${skin}"/>
+  <rect x="${cx+8}" y="${by+props.bodyH+13}" width="16" height="${props.leg}" rx="8" fill="${skin}"/>
+  <path d="M${cx-29} ${by+props.bodyH+props.leg+10} Q${cx-10} ${by+props.bodyH+props.leg+3} ${cx-2} ${by+props.bodyH+props.leg+12}" fill="none" stroke="#26352f" stroke-width="9" stroke-linecap="round"/>
+  <path d="M${cx+2} ${by+props.bodyH+props.leg+12} Q${cx+20} ${by+props.bodyH+props.leg+3} ${cx+30} ${by+props.bodyH+props.leg+10}" fill="none" stroke="#26352f" stroke-width="9" stroke-linecap="round"/>
+ </svg>`;
+}
+function renderAvatar(){
+ document.getElementById('avatar').innerHTML=avatarSVG(state.age,state.gender);
+ document.getElementById('profileAvatar').innerHTML=avatarSVG(state.age,state.gender,true);
+ document.getElementById('avatarName').textContent=state.name;
+ document.getElementById('avatarAge').textContent=`${state.age} ${state.age===1?'год':state.age<5?'года':'лет'} · акробатика`;
+ document.getElementById('profileAgeText').textContent=`${state.age} ${state.age<5?'года':'лет'}`;
+}
+function xpToNext(){return state.level*500}
+function renderHome(){
+ document.getElementById('hello').textContent=`Привет, ${state.name}! 👋`;
+ document.getElementById('level').textContent=state.level;
+ document.getElementById('xp').textContent=state.xp;
+ const pct=Math.min(100,(state.xp/xpToNext())*100);document.getElementById('xpbar').style.width=pct+'%';
+ document.getElementById('xpcaption').textContent=`${state.xp} / ${xpToNext()} XP до следующего уровня`;
+ const verified=skills.filter(s=>s.done||state.verified.includes(s.id)).length;
+ document.getElementById('skillCount').textContent=verified;document.getElementById('badgeCount').textContent=state.closedMonths+(verified?1:0);
+ document.getElementById('statXp').textContent=state.xp+' XP';document.getElementById('statSkills').textContent=verified+' навыков';document.getElementById('statBadges').textContent=(state.closedMonths+(verified?1:0))+' наград';
+ document.getElementById('attended').textContent=state.lessons;document.getElementById('target').textContent=state.target;
+ document.getElementById('a1').textContent=state.lessons;
+ document.getElementById('sXp').textContent=state.xp+' XP';document.getElementById('sLessons').textContent=state.lessons;
+ document.getElementById('sMonths').textContent=state.closedMonths;
+ document.getElementById('streak').textContent=state.streak;
+ renderLessons();renderPath();renderAvatar();
+}
+function renderLessons(){
+ const grid=document.getElementById('lessonGrid');grid.innerHTML='';
+ for(let i=0;i<state.target;i++){
+  const d=document.createElement('div');d.className='lesson '+(i<state.lessons?'done':'')+(i===state.lessons?' today':'');d.innerHTML=`<small>${i+1}</small>${i<state.lessons?'':'+'}`;grid.appendChild(d);
+ }
+ const note=document.getElementById('attNote');
+ if(state.lessons>=state.target) note.innerHTML='🎉 <b>Месячная норма выполнена!</b> Новый уровень уже начислен.';
+ else note.innerHTML=`Каждое посещённое занятие даёт <b>+50 XP</b>. Осталось <b>${state.target-state.lessons}</b> занятий до закрытия месяца.`;
+}
+function renderPath(){
+ const row=document.getElementById('pathRow');row.innerHTML='';
+ skills.slice(0,5).forEach((s,i)=>{
+  const done=s.done||state.verified.includes(s.id), open=!done&&i<=3;
+  row.innerHTML+=`<div class="node ${done?'done':open?'open':'lock'}"><div class="node-circle">${done?'✓':open?s.icon:'🔒'}</div><b>${s.name}</b></div>`;
+ });
+}
+function renderSkills(filter='all'){
+ const list=document.getElementById('skillList');list.innerHTML='';
+ skills.filter(s=>filter==='all'||s.cat===filter).forEach(s=>{
+  const done=s.done||state.verified.includes(s.id);
+  list.innerHTML+=`<div class="skill-card ${done?'':'locked'}"><div class="skill-icon">${s.icon}</div><span class="tag">${s.cat==='acro'?'АКРОБАТИКА':s.cat==='strength'?'СИЛА':'ГИБКОСТЬ'}</span><h3>${s.name}</h3><p>${s.desc}<br><b>Награда: +${s.xp} XP</b></p>${done?'<button class="btn secondary" disabled>✓ ОСВОЕНО</button>':`<button class="btn" onclick="openSkill('${s.id}')">СДАТЬ НАВЫК</button>`}</div>`;
+ });
+}
+function openSkill(id){
+ const s=skills.find(x=>x.id===id);window.currentSkill=s;
+ document.getElementById('modalTitle').textContent='🎥 '+s.name;
+ document.getElementById('videoModal').classList.add('open');
+ document.getElementById('videoFile').value='';document.getElementById('videoPreview').style.display='none';document.getElementById('verifyBtn').style.display='none';document.getElementById('verify').classList.remove('show');document.getElementById('result').classList.remove('show');
+}
+function addLesson(){
+ if(state.lessons>=state.target){toast('Месячная норма уже выполнена 🎉');return}
+ state.lessons++;state.xp+=50;state.streak=Math.max(state.streak,1);
+ if(state.lessons===state.target){state.level++;state.xp=0;state.closedMonths++;toast('🎉 Месяц закрыт! Новый уровень!');}
+ else toast('Посещение добавлено · +50 XP ⭐');
+ save();renderHome();
+}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2300)}
+function go(page){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(page).classList.add('active');
+ document.querySelectorAll('.nav button,.mobile-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ if(page==='skills')renderSkills();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav button,.mobile-nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.getElementById('addLesson').onclick=addLesson;
+document.getElementById('nextBtn').onclick=()=>go('skills');
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderSkills(b.dataset.filter)});
+document.getElementById('closeModal').onclick=()=>document.getElementById('videoModal').classList.remove('open');
+document.getElementById('videoModal').onclick=e=>{if(e.target.id==='videoModal')e.currentTarget.classList.remove('open')};
+document.getElementById('videoFile').onchange=e=>{
+ const file=e.target.files[0];if(!file)return;
+ const v=document.getElementById('videoPreview');v.src=URL.createObjectURL(file);v.style.display='block';document.getElementById('verifyBtn').style.display='inline-block';
+};
+document.getElementById('verifyBtn').onclick=()=>{
+ document.getElementById('verify').classList.add('show');const bar=document.getElementById('verifyBar');bar.style.width='100%';
+ setTimeout(()=>{
+  const s=window.currentSkill;if(!state.verified.includes(s.id)){state.verified.push(s.id);state.xp+=s.xp;while(state.xp>=xpToNext()){state.xp-=xpToNext();state.level++}}
+  save();document.getElementById('result').classList.add('show');renderHome();renderSkills();toast('Навык добавлен аватару 🎉');
+ },1800);
+};
+document.getElementById('saveProfile').onclick=()=>{
+ state.name=document.getElementById('nameInput').value.trim()||'Спортсмен';
+ state.age=Math.max(3,Math.min(25,+document.getElementById('ageInput').value||9));state.gender=document.getElementById('genderInput').value;save();renderHome();toast('Профиль сохранён · аватар обновлён');
+};
+document.getElementById('nameInput').value=state.name;document.getElementById('ageInput').value=state.age;document.getElementById('genderInput').value=state.gender;
+renderHome();renderSkills();
+</script>
+</body>
+</html>
